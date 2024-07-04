@@ -1,14 +1,13 @@
-// app/api/webhook/route.js
-
 import Stripe from 'stripe';
 import { buffer } from 'micro';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const runtime = 'experimental-edge'; // or 'nodejs'
-
-export const api = {
-    bodyParser: false,
+export const config = {
+    runtime: 'experimental-edge',
+    api: {
+        bodyParser: false,
+    },
 };
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
