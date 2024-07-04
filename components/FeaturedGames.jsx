@@ -135,7 +135,7 @@ const FeaturedGames = () => {
                             transition: { duration: 0.3 },
                         }}
                         {...cardAnimation}
-                        onClick={() => router.push('/discover')}
+                        onClick={() => router.push(`/discover?gameId=${game.id}`)}
                     >
                         <div className="w-full h-[308px] relative mb-2">
                             <Image
@@ -181,7 +181,17 @@ const FeaturedGames = () => {
                     </motion.div>
                 ))}
             </motion.div>
-            <ToastContainer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-gray-800 text-white font-medium border border-gray-700 rounded-md shadow-lg"
+/>
+
         </div>
     );
 };

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // Adjusted import for useRouter
 import { db, auth } from '../../firebase';
 import { collection, getDocs, addDoc, doc, deleteDoc, query, where } from 'firebase/firestore';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
@@ -35,19 +35,19 @@ const FreeGames = () => {
     useEffect(() => {
         const fetchGames = async () => {
             try {
-                console.log("Fetching games..."); // Debugging statement
+                console.log("Fetching free games..."); // Debugging statement
                 const q = query(collection(db, 'games'), where('type', '==', 'free'));
                 const querySnapshot = await getDocs(q);
                 const gamesList = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-                console.log("Games fetched: ", gamesList); // Debugging statement
+                console.log("Free games fetched: ", gamesList); // Debugging statement
                 setGames(gamesList);
                 setFavorites(gamesList.map(() => false));
             } catch (e) {
-                console.error("Error fetching games: ", e);
-                toast.error("Error fetching games");
+                console.error("Error fetching free games: ", e);
+                toast.error("Error fetching free games");
             }
         };
 
@@ -222,7 +222,17 @@ const FreeGames = () => {
                 </div>
             </div>
             <Footer />
-            <ToastContainer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-gray-800 text-white font-medium border border-gray-700 rounded-md shadow-lg"
+/>
+
         </div>
     );
 };

@@ -1,27 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { motion } from "framer-motion";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import Image from "next/image";
-
-const gameDetails = {
-    title: "Marvel's Spiderman",
-    publisher: "Marvel",
-    genre: "Action, Strategy",
-    features: "Single Player",
-    description: `Swing into action and embrace the exhilarating thrill of becoming New York City's friendly neighborhood superhero in Marvel's Spider-Man: Web of Adventures. Developed by Insomniac Games and published by Sony Interactive Entertainment, this iconic action-adventure game brings the iconic Marvel hero to life in an immersive open-world experience like never before.
-    
-    Step into the shoes of Peter Parker, a.k.a. Spider-Man, as he navigates the bustling streets of Manhattan, fighting crime, and protecting its citizens from threats both old and new. Using his agility, acrobatic abilities, and web-slinging abilities, Spider-Man traverses the city skyline with speed and grace, delivering justice to villains who dare to threaten the peace.
-    
-    In Marvel's Spider-Man: Web of Adventures, players will explore a vibrant and dynamic rendition of New York City, filled with iconic landmarks, detailed neighborhoods, and hidden secrets waiting to be discovered. From the towering skyscrapers of Midtown to the gritty alleys of Hell's Kitchen, every corner of the city offers opportunities for excitement and heroism.
-    
-    As Spider-Man, players will face off against a rogues' gallery of classic villains from the Marvel universe, including the likes of Green Goblin, Doctor Octopus, and Venom. Each of these iconic foes has unique and formidable abilities, posing a significant threat that will test the player's skills and strategy. To overcome these challenges, players can utilize a variety of combat moves, gadgets, and suit upgrades.
-    
-    Being a hero isn't just about fighting crime – it's also about balancing Peter Parker's personal life with his superhero duties. The game delves into Peter's interactions with friends, family, and love interests, as he navigates the complexities of maintaining dual identities and protecting those he cares about.`,
-    image: "/img2.jpg"
-};
+import { db, auth } from '../../firebase'; // Import auth for current user info
+import { doc, getDoc, collection, addDoc } from 'firebase/firestore';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const sectionAnimation = {
     initial: { opacity: 0, y: 50 },
@@ -30,26 +18,72 @@ const sectionAnimation = {
 };
 
 const Discover = () => {
-    const [currentImage, setCurrentImage] = useState(gameDetails.image);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const gameId = searchParams.get('gameId');
+    const [gameDetails, setGameDetails] = useState(null);
+    const [currentImage, setCurrentImage] = useState("");
+
+    useEffect(() => {
+        const fetchGameDetails = async () => {
+            if (gameId) {
+                try {
+                    const gameDocRef = doc(db, 'games', gameId);
+                    const gameDoc = await getDoc(gameDocRef);
+                    if (gameDoc.exists()) {
+                        const gameData = gameDoc.data();
+                        setGameDetails(gameData);
+                        setCurrentImage(gameData.imageUrl);
+                    } else {
+                        console.error("No such game!");
+                    }
+                } catch (e) {
+                    console.error("Error fetching game details: ", e);
+                }
+            }
+        };
+
+        fetchGameDetails();
+    }, [gameId]);
+
+    if (!gameDetails) return <div>Loading...</div>;
 
     const handlePrevImage = () => {
-        if (currentImage === "/img2.jpg")
-            setCurrentImage("/img6.jpg");
-        else if (currentImage === "/img4.jpg")
-            setCurrentImage("/img2.jpg");
-        else if (currentImage === "/img5.jpg")
-            setCurrentImage("/img4.jpg");
-        else setCurrentImage("/img5.jpg");
+        // Logic to switch to the previous image (if multiple images are available)
     };
 
     const handleNextImage = () => {
-        if (currentImage === "/img2.jpg")
-            setCurrentImage("/img4.jpg");
-        else if (currentImage === "/img4.jpg")
-            setCurrentImage("/img5.jpg");
-        else if (currentImage === "/img5.jpg")
-            setCurrentImage("/img6.jpg");
-        else setCurrentImage("/img2.jpg");
+        // Logic to switch to the next image (if multiple images are available)
+    };
+
+    const handleAddToCart = async () => {
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error("User not logged in");
+                toast.error("User not logged in");
+                return;
+            }
+
+            // Reference to the 'cart' collection
+            const cartCollectionRef = collection(db, 'cart');
+
+            const cartData = {
+                uid: user.uid,
+                name: gameDetails.title,
+                price: gameDetails.price,
+                image: gameDetails.imageUrl,
+                description: gameDetails.description
+            };
+
+            // Add the game data to the 'cart' collection
+            await addDoc(cartCollectionRef, cartData);
+            console.log("Game added to cart successfully!");
+            toast.success("Game added to cart successfully!");
+        } catch (e) {
+            console.error("Error adding game to cart: ", e);
+            toast.error("Error adding game to cart!");
+        }
     };
 
     return (
@@ -94,30 +128,35 @@ const Discover = () => {
                     </div>
                     <div className="mt-8 w-full md:w-3/4 pl-12 rounded-lg shadow-md">
                         <h3 className="text-xl font-semibold mb-4">Game Title: {gameDetails.title}</h3>
-                        <p className="mb-2"><strong>Publisher:</strong> {gameDetails.publisher}</p>
-                        <p className="mb-2"><strong>Genre:</strong> {gameDetails.genre}</p>
-                        <p className="mb-2"><strong>Features:</strong> {gameDetails.features}</p>
+                        <p className="mb-2"><strong>Publisher:</strong> Ali Amin</p>
+                        <p className="mb-2"><strong>Genre:</strong> {gameDetails.category}</p>
+                        <p className="mb-2"><strong>Features:</strong> {gameDetails.type}</p>
                         <p className="mb-4 mt-6"><strong>Description:</strong> {gameDetails.description}</p>
                         <div className="flex justify-end gap-4">
-                            <motion.button
-                                className="w-32 bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600 transition-colors duration-300"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                Buy Now
-                            </motion.button>
                             <motion.button
                                 className="w-32 bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors duration-300"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
+                                onClick={handleAddToCart}
                             >
-                                Add to cart
+                                Add to Cart
                             </motion.button>
                         </div>
                     </div>
                 </motion.div>
             </div>
             <Footer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-gray-800 text-white font-medium border border-gray-700 rounded-md shadow-lg"
+/>
+
         </div>
     );
 };

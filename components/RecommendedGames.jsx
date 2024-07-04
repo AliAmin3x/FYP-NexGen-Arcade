@@ -65,12 +65,10 @@ const RecommendedGames = () => {
             };
 
             if (favorites[index]) {
-                // Remove from favorites
                 const favDocRef = doc(favCollectionRef, `${user.uid}_${game.id}`);
                 await deleteDoc(favDocRef);
                 toast.success("Removed from favorites!");
             } else {
-                // Add to favorites
                 await addDoc(favCollectionRef, favData);
                 toast.success("Added to favorites!");
             }
@@ -83,7 +81,7 @@ const RecommendedGames = () => {
     };
 
     const handleAddToCart = async (game, event) => {
-        event.stopPropagation(); // Prevent the parent onClick event
+        event.stopPropagation();
 
         try {
             const user = auth.currentUser;
@@ -93,7 +91,6 @@ const RecommendedGames = () => {
                 return;
             }
 
-            // Reference to the 'cart' collection
             const cartCollectionRef = collection(db, 'cart');
 
             const cartData = {
@@ -104,7 +101,6 @@ const RecommendedGames = () => {
                 description: game.description
             };
 
-            // Add the game data to the 'cart' collection
             await addDoc(cartCollectionRef, cartData);
             console.log("Game added to cart successfully!");
             toast.success("Game added to cart successfully!");
@@ -112,6 +108,10 @@ const RecommendedGames = () => {
             console.error("Error adding game to cart: ", e);
             toast.error("Error adding game to cart!");
         }
+    };
+
+    const handleGameClick = (gameId) => {
+        router.push(`/discover?gameId=${gameId}`);
     };
 
     return (
@@ -128,7 +128,7 @@ const RecommendedGames = () => {
                             transition: { duration: 0.3 },
                         }}
                         {...cardAnimation}
-                        onClick={() => router.push('/discover')}
+                        onClick={() => handleGameClick(game.id)}
                     >
                         <div className="w-full h-[308px] relative mb-2">
                             <Image
@@ -174,7 +174,16 @@ const RecommendedGames = () => {
                     </motion.div>
                 ))}
             </motion.div>
-            <ToastContainer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-gray-800 text-white font-medium border border-gray-700 rounded-md shadow-lg"
+/>
         </div>
     );
 };

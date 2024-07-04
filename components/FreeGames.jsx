@@ -7,11 +7,12 @@ import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
+import { motion } from 'framer-motion';
 
 const FreeGames = () => {
     const [games, setGames] = useState([]);
     const [favorites, setFavorites] = useState([]);
-    const router = useRouter(); // Initialize useRouter hook
+    const router = useRouter();
 
     const handleFreeGamesClick = () => {
         router.push('/freegames');
@@ -56,12 +57,10 @@ const FreeGames = () => {
             };
 
             if (favorites[index]) {
-                // Remove from favorites
                 const favDocRef = doc(favCollectionRef, `${user.uid}_${game.id}`);
                 await deleteDoc(favDocRef);
                 toast.success("Removed from favorites!");
             } else {
-                // Add to favorites
                 await addDoc(favCollectionRef, favData);
                 toast.success("Added to favorites!");
             }
@@ -73,7 +72,9 @@ const FreeGames = () => {
         }
     };
 
-    const handleAddToCart = async (game) => {
+    const handleAddToCart = async (game, event) => {
+        event.stopPropagation();
+
         try {
             const user = auth.currentUser;
             if (!user) {
@@ -99,6 +100,10 @@ const FreeGames = () => {
             console.error("Error adding game to cart: ", e);
             toast.error("Error adding game to cart!");
         }
+    };
+
+    const handleGameClick = (gameId) => {
+        router.push(`/discover?gameId=${gameId}`);
     };
 
     const settings = {
@@ -137,7 +142,12 @@ const FreeGames = () => {
             </button>
             <Slider {...settings}>
                 {games.map((game, index) => (
-                    <div key={game.id} className="flex p-2">
+                    <motion.div 
+                        key={game.id} 
+                        className="flex p-2"
+                        onClick={() => handleGameClick(game.id)}
+                        whileHover={{ scale: 1.05, boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', transition: { duration: 0.3 } }}
+                    >
                         <div className="relative bg-[#303030] p-4 rounded-lg shadow-md">
                             <div className="image-container w-full h-48 relative">
                                 <Image
@@ -149,14 +159,22 @@ const FreeGames = () => {
                                 />
                             </div>
                             <h3 className="text-white text-lg font-semibold mt-2">{game.title}</h3>
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                transition={{ duration: 0.3 }}
                                 className="mt-2 bg-[#71319f] text-white px-4 py-2 rounded-md"
-                                onClick={() => handleAddToCart(game)}
+                                onClick={(event) => handleAddToCart(game, event)}
                             >
                                 Add to Cart
-                            </button>
+                            </motion.button>
 
-                            <div className="absolute bottom-2 right-2">
+                            <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
+                                transition={{ duration: 0.3 }}
+                                className="absolute bottom-2 right-2"
+                            >
                                 {favorites[index] ? (
                                     <AiFillHeart
                                         size={24}
@@ -170,12 +188,21 @@ const FreeGames = () => {
                                         className='cursor-pointer text-purple-400'
                                     />
                                 )}
-                            </div>
+                            </motion.div>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </Slider>
-            <ToastContainer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-gray-800 text-white font-medium border border-gray-700 rounded-md shadow-lg"
+/>
         </div>
     );
 };

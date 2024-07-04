@@ -3,10 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // Correct import for Next.js v12+
 import { db, auth } from '../../firebase';
 import { collection, getDocs, addDoc, doc, deleteDoc, query, where } from 'firebase/firestore';
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../../components/Navbar';
@@ -33,10 +32,9 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
 
-const FeaturedGames = () => {
+const AllGames = () => {
     const router = useRouter();
     const [games, setGames] = useState([]);
-    const [favorites, setFavorites] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -56,7 +54,6 @@ const FeaturedGames = () => {
                     ...doc.data()
                 }));
                 setGames(gamesList);
-                setFavorites(gamesList.map(() => false));
             } catch (e) {
                 console.error("Error fetching games: ", e);
                 toast.error("Error fetching games");
@@ -65,42 +62,6 @@ const FeaturedGames = () => {
 
         fetchGames();
     }, [selectedCategory]);
-
-    const handleFavourite = async (game, index) => {
-        try {
-            const user = auth.currentUser;
-            if (!user) {
-                console.error("User not logged in");
-                toast.error("User not logged in");
-                return;
-            }
-
-            const favCollectionRef = collection(db, 'favorites');
-            const favData = {
-                uid: user.uid,
-                gameId: game.id,
-                name: game.title,
-                price: game.price,
-                image: game.imageUrl,
-            };
-
-            if (favorites[index]) {
-                // Remove from favorites
-                const favDocRef = doc(favCollectionRef, `${user.uid}_${game.id}`);
-                await deleteDoc(favDocRef);
-                toast.success("Removed from favorites!");
-            } else {
-                // Add to favorites
-                await addDoc(favCollectionRef, favData);
-                toast.success("Added to favorites!");
-            }
-
-            setFavorites(favorites.map((fav, i) => (i === index ? !fav : fav)));
-        } catch (e) {
-            console.error("Error handling favorite: ", e);
-            toast.error("Error handling favorite!");
-        }
-    };
 
     const handleAddToCart = async (game, event) => {
         event.stopPropagation(); // Prevent the parent onClick event
@@ -148,6 +109,11 @@ const FeaturedGames = () => {
     const handleCategoryChange = (category) => {
         setSelectedCategory(category);
         setCurrentPage(1);
+    };
+
+    // Handle clicking on a game card
+    const handleGameClick = (gameId) => {
+        router.push(`/discover?gameId=${gameId}`);
     };
 
     return (
@@ -198,6 +164,7 @@ const FeaturedGames = () => {
                                     transition: { duration: 0.6 },
                                 }}
                                 {...cardAnimation}
+                                onClick={() => handleGameClick(game.id)} // Navigate to discover page on click
                             >
                                 <motion.div
                                     className="relative w-full h-48 overflow-hidden rounded-lg"
@@ -224,54 +191,57 @@ const FeaturedGames = () => {
                                 >
                                     Add to Cart
                                 </motion.button>
-                                <motion.div
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="absolute bottom-2 right-2"
-                                >
-                                    {favorites[index] ? (
-                                        <AiFillHeart
-                                            size={24}
-                                            onClick={() => handleFavourite(game, index)}
-                                            className='cursor-pointer text-purple-400'
-                                        />
-                                    ) : (
-                                        <AiOutlineHeart
-                                            size={24}
-                                            onClick={() => handleFavourite(game, index)}
-                                            className='cursor-pointer text-purple-400'
-                                        />
-                                    )}
-                                </motion.div>
                             </motion.div>
                         ))}
                     </motion.div>
                 ) : (
-                    <p className="text-gray-400">No games available in this category.</p>
+                    <p>No games found</p>
                 )}
-                {/* Pagination */}
-                <div className="flex justify-center mt-4">
-                    <button
-                        onClick={() => changePage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="bg-[#71319f] text-white px-4 py-2 rounded-md mr-2 disabled:opacity-50"
-                    >
-                        Previous
-                    </button>
-                    <button
-                        onClick={() => changePage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="bg-[#71319f] text-white px-4 py-2 rounded-md ml-2 disabled:opacity-50"
-                    >
-                        Next
-                    </button>
-                </div>
+                {totalPages > 1 && (
+                    <div className="flex justify-center mt-8 space-x-2">
+                        <button
+                            onClick={() => changePage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 bg-[#71319f] text-white rounded-md disabled:bg-gray-500"
+                        >
+                            Previous
+                        </button>
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => changePage(i + 1)}
+                                className={classNames(
+                                    i + 1 === currentPage ? 'bg-[#71319f] text-white' : 'text-[#71319f] hover:bg-[#71319f] hover:text-white',
+                                    'px-3 py-1 rounded-md'
+                                )}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={() => changePage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1 bg-[#71319f] text-white rounded-md disabled:bg-gray-500"
+                        >
+                            Next
+                        </button>
+                    </div>
+                )}
             </div>
             <Footer />
-            <ToastContainer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-[#606060] text-white font-bold border border-gray-700 rounded-md shadow-lg"
+/>
+
         </div>
     );
 };
 
-export default FeaturedGames;
+export default AllGames;

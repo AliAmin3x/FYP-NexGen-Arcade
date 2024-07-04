@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // Adjusted import for useRouter
 import { db, auth } from '../../firebase';
 import { collection, getDocs, addDoc, doc, deleteDoc, query, where } from 'firebase/firestore';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
@@ -11,6 +11,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+
+// Rest of your component code with useState, useEffect, and other hooks
+
 
 const cardAnimation = {
     initial: { opacity: 0, y: 50 },
@@ -120,6 +123,10 @@ const FeaturedGames = () => {
         }
     };
 
+    const handleGameClick = (gameId) => {
+        router.push(`/discover?gameId=${gameId}`);
+    };
+
     // Calculate total number of pages
     const totalPages = Math.ceil(games.length / ITEMS_PER_PAGE);
 
@@ -149,6 +156,7 @@ const FeaturedGames = () => {
                                 transition: { duration: 0.6 },
                             }}
                             {...cardAnimation}
+                            onClick={() => handleGameClick(game.id)}
                         >
                             <motion.div
                                 className="relative w-full h-48 overflow-hidden rounded-lg"
@@ -216,7 +224,17 @@ const FeaturedGames = () => {
                 </div>
             </div>
             <Footer />
-            <ToastContainer />
+            <ToastContainer
+    position="bottom-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    closeOnClick
+    pauseOnHover
+    draggable
+    pauseOnFocusLoss
+    toastClassName="bg-gray-800 text-white font-medium border border-gray-700 rounded-md shadow-lg"
+/>
+
         </div>
     );
 };
