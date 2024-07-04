@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from "framer-motion";
 import { useRouter } from 'next/navigation';
 
-const jazzcashPayment = () => {
+const JazzcashPayment = () => {
     const router = useRouter();
 
     const handleConfirm = (e) => {
@@ -55,4 +55,4 @@ const jazzcashPayment = () => {
     );
 };
 
-export default jazzcashPayment;
+export default JazzcashPayment;
