@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from 'next/image';
+import Image from "next/image";
 import { db } from "../../firebase"; // Adjust the import path according to your project structure
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -42,10 +42,13 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const gamesCollection = collection(db, 'games');
-        const q = query(gamesCollection, where('status', '!=', null));
+        const gamesCollection = collection(db, "games");
+        const q = query(gamesCollection, where("status", "!=", null));
         const gamesSnapshot = await getDocs(q);
-        const gamesList = gamesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const gamesList = gamesSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         setGames(gamesList);
         setLoading(false);
       } catch (error) {
@@ -89,7 +92,10 @@ const Dashboard = () => {
               <div key={section.id} className="mb-4">
                 <Link
                   href={section.href}
-                  className="text-lg font-semibold hover:text-purple-500">{section.title}</Link>
+                  className="text-lg font-semibold hover:text-purple-500"
+                >
+                  {section.title}
+                </Link>
                 <p className="text-gray-300">{section.description}</p>
               </div>
             ))}
@@ -102,7 +108,10 @@ const Dashboard = () => {
           >
             <h3 className="text-xl font-semibold mb-4">Dashboard</h3>
             {games.map((game) => (
-              <div key={game.id} className="flex gap-4 items-center mb-4 bg-[#4e4949] p-4 rounded-lg shadow-md hover:bg-[#606060] transition-colors duration-300 hover:scale-95 justify-around">
+              <div
+                key={game.id}
+                className="flex gap-4 items-center mb-4 bg-[#4e4949] p-4 rounded-lg shadow-md hover:bg-[#606060] transition-colors duration-300 hover:scale-95 justify-around"
+              >
                 <Image
                   src={game.imageUrl}
                   alt={game.title}
@@ -110,12 +119,18 @@ const Dashboard = () => {
                   width={64}
                   height={64}
                 />
-                <h4 className="flex justify-center items-center text-lg font-semibold">{game.title}</h4>
-                <div className='flex flex-col gap-1 items-end'>
+                <h4 className="flex justify-center items-center text-lg font-semibold">
+                  {game.title}
+                </h4>
+                <div className="flex flex-col gap-1 items-end">
                   <p className="text-gray-300">{game.category}</p>
                   <p className="text-gray-400">${game.price}</p>
                 </div>
-                <div className={`flex flex-col items-center px-4 py-1 rounded-lg text-white ${game.status === 'Pending' ? 'bg-yellow-500' : 'bg-green-500'}`}>
+                <div
+                  className={`flex flex-col items-center px-4 py-1 rounded-lg text-white ${
+                    game.status === "Pending" ? "bg-yellow-500" : "bg-green-500"
+                  }`}
+                >
                   <p className="font-semibold">{game.status}</p>
                 </div>
               </div>
@@ -126,6 +141,6 @@ const Dashboard = () => {
       <Footer />
     </div>
   );
-}
+};
 
 export default Dashboard;

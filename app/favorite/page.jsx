@@ -1,24 +1,31 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Navbar from '../../components/Navbar';
-import Footer from '../../components/Footer';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import { db, auth } from '../../firebase';
-import { collection, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
-import { getCurrentUserEmail } from '../../firebase';
+import React, { useEffect, useState } from "react";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { db, auth } from "../../firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { getCurrentUserEmail } from "../../firebase";
 
 const cardAnimation = {
   initial: { opacity: 0, y: 50 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: 'easeInOut' },
+  transition: { duration: 0.5, ease: "easeInOut" },
 };
 
 const headingAnimation = {
   initial: { opacity: 0, y: 50 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: 'easeInOut' },
+  transition: { duration: 0.5, ease: "easeInOut" },
 };
 
 const Favourites = () => {
@@ -29,12 +36,12 @@ const Favourites = () => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         try {
-          const favCollectionRef = collection(db, 'favorites');
-          const q = query(favCollectionRef, where('uid', '==', user.uid));
+          const favCollectionRef = collection(db, "favorites");
+          const q = query(favCollectionRef, where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
-          const items = querySnapshot.docs.map(doc => ({
+          const items = querySnapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
           setFavorites(items);
         } catch (e) {
@@ -60,25 +67,31 @@ const Favourites = () => {
         return;
       }
 
-      const favDocRef = doc(db, 'favorites', gameId);
+      const favDocRef = doc(db, "favorites", gameId);
       await deleteDoc(favDocRef);
-      setFavorites(favorites.filter(game => game.id !== gameId));
+      setFavorites(favorites.filter((game) => game.id !== gameId));
     } catch (e) {
       console.error("Error removing favorite: ", e);
     }
   };
 
   return (
-    <div className='bg-[#181818] flex flex-col min-h-screen'>
+    <div className="bg-[#181818] flex flex-col min-h-screen">
       <Navbar email={getCurrentUserEmail()} />
-      <div className='container mx-auto text-white py-8'>
-        <motion.h2 className="text-4xl text-center text-white font-semibold mb-8" {...headingAnimation}>
+      <div className="container mx-auto text-white py-8">
+        <motion.h2
+          className="text-4xl text-center text-white font-semibold mb-8"
+          {...headingAnimation}
+        >
           Favourites
         </motion.h2>
         {loading ? (
           <div className="text-center text-white">Loading...</div>
         ) : (
-          <motion.div className="grid grid-cols-2 md:grid-cols-3 gap-4" {...cardAnimation}>
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-3 gap-4"
+            {...cardAnimation}
+          >
             {favorites.map((game) => (
               <motion.div
                 key={game.id}
@@ -94,7 +107,9 @@ const Favourites = () => {
                     alt={game.name}
                     className="w-full h-auto mb-2"
                   />
-                  <h3 className="text-white text-lg font-semibold">{game.name}</h3>
+                  <h3 className="text-white text-lg font-semibold">
+                    {game.name}
+                  </h3>
                   <p className="text-gray-400 mt-2">{game.price}</p>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
