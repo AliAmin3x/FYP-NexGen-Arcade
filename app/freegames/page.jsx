@@ -130,6 +130,10 @@ const FreeGames = () => {
     }
   };
 
+  const handleGameClick = (gameId) => {
+    router.push(`/discover?gameId=${gameId}`);
+  };
+
   // Calculate total number of pages
   const totalPages = Math.ceil(games.length / ITEMS_PER_PAGE);
 
@@ -166,6 +170,8 @@ const FreeGames = () => {
                   transition: { duration: 0.6 },
                 }}
                 {...cardAnimation}
+                onClick={() => handleGameClick(game.id)}
+
               >
                 <motion.div
                   className="relative w-full h-48 overflow-hidden rounded-lg"
