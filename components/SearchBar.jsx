@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { AiOutlineSearch } from "react-icons/ai";
 import { TbAdjustmentsSearch } from "react-icons/tb";
 
@@ -49,7 +50,7 @@ const SearchBar = () => {
               className="flex items-center bg-[#303030] hover:bg-[#606060] text-white p-2 rounded-md mb-2 w-full transition-all duration-300 ease-in-out"
             >
               {game.imageUrl ? (
-                <img src={game.imageUrl} alt={game.title} className="w-16 h-16 rounded-md mr-4" />
+                <Image src={game.imageUrl} alt={game.title} width={64} height={64} className="rounded-md mr-4" />
               ) : (
                 <div className="w-16 h-16 rounded-md mr-4 bg-gray-600 flex items-center justify-center">
                   <span className="text-sm text-white">No Image</span>
