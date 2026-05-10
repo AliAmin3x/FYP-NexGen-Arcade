@@ -8,29 +8,28 @@ import {
   AiOutlineHeart,
   AiOutlineUser,
 } from "react-icons/ai";
-import { FaUserCircle, FaSignOutAlt, FaUserPlus, FaCog } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { useSession } from "../lib/SessionContext";
+import { useRouter } from "next/navigation";
 
-const CustomLink = ({ href, children }) => {
-  return (
-    <motion.a
-      href={href}
-      className="relative text-white font-semibold text-base sm:text-lg"
-      whileHover={{ scaleX: 1.1 }}
-    >
-      {children}
-      <motion.div
-        className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-500 rounded-lg"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-      />
-    </motion.a>
-  );
-};
+const CustomLink = ({ href, children }) => (
+  <motion.a
+    href={href}
+    className="relative text-white font-semibold text-base sm:text-lg"
+    whileHover={{ scaleX: 1.1 }}
+  >
+    {children}
+    <motion.div
+      className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-500 rounded-lg"
+      initial={{ scaleX: 0 }}
+      animate={{ scaleX: 1 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+    />
+  </motion.a>
+);
 
 const AnimatedText = ({ text }) => {
   const letters = text.split("");
-
   return (
     <div className="hidden sm:block text-white font-bold text-lg sm:text-xl">
       {letters.map((letter, index) => (
@@ -48,12 +47,15 @@ const AnimatedText = ({ text }) => {
 };
 
 const Navbar = ({ userEmail, username }) => {
+  const { user, logout } = useSession();
+  const router = useRouter();
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
 
-  const handleTogglePopup = () => {
-    setShowPopup(!showPopup);
-  };
+  const displayEmail = userEmail || user?.email;
+  const displayName = username || user?.username;
+
+  const handleTogglePopup = () => setShowPopup(!showPopup);
 
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -63,28 +65,25 @@ const Navbar = ({ userEmail, username }) => {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
 
   return (
     <div className="z-50 sticky top-0 left-0 shadow-sm shadow-purple-400 w-full h-16 sm:h-20 bg-[#303030] flex justify-between items-center px-3 sm:px-4">
       {/* Logo */}
       <Link href="/homepage" className="cursor-pointer">
         <div className="flex justify-center items-center gap-2 sm:gap-3">
-          <Image
-            src="/logo.png"
-            alt="logo"
-            width={30}
-            height={30}
-            className="sm:w-10 sm:h-10"
-          />
+          <Image src="/logo.png" alt="logo" width={30} height={30} className="sm:w-10 sm:h-10" />
           <AnimatedText text="NexGen Arcade" />
         </div>
       </Link>
 
-      {/* Navbar */}
+      {/* Nav Links */}
       <div className="flex gap-6 sm:gap-8">
         <CustomLink href="/homepage">Store</CustomLink>
         <CustomLink href="/library">Library</CustomLink>
@@ -93,30 +92,17 @@ const Navbar = ({ userEmail, username }) => {
 
       {/* Profile */}
       <div className="flex gap-4 sm:gap-6 items-center relative">
-        <motion.span
-          whileHover={{ scale: 1.1 }}
-          onClick={handleTogglePopup}
-          className="cursor-pointer"
-        >
-          <AiOutlineUser
-            size={20}
-            className="text-white hover:text-purple-500 transition-colors duration-300 sm:text-2xl"
-          />
+        <motion.span whileHover={{ scale: 1.1 }} onClick={handleTogglePopup} className="cursor-pointer">
+          <AiOutlineUser size={20} className="text-white hover:text-purple-500 transition-colors duration-300 sm:text-2xl" />
         </motion.span>
         <Link href="/favorite">
           <motion.span whileHover={{ scale: 1.1 }}>
-            <AiOutlineHeart
-              size={20}
-              className="text-white hover:text-purple-500 transition-colors duration-300 sm:text-2xl"
-            />
+            <AiOutlineHeart size={20} className="text-white hover:text-purple-500 transition-colors duration-300 sm:text-2xl" />
           </motion.span>
         </Link>
         <Link href="/cart">
           <motion.span whileHover={{ scale: 1.1 }}>
-            <AiOutlineShoppingCart
-              size={20}
-              className="text-white hover:text-purple-500 transition-colors duration-300 sm:text-2xl"
-            />
+            <AiOutlineShoppingCart size={20} className="text-white hover:text-purple-500 transition-colors duration-300 sm:text-2xl" />
           </motion.span>
         </Link>
 
@@ -131,33 +117,26 @@ const Navbar = ({ userEmail, username }) => {
             <div className="flex items-center gap-2">
               <FaUserCircle size={18} className="text-purple-500 sm:text-xl" />
               <div>
-                <p className="font-semibold text-sm sm:text-base">{username}</p>
-                <p className="text-xs sm:text-sm text-gray-400">{userEmail}</p>
+                <p className="font-semibold text-sm sm:text-base">{displayName}</p>
+                <p className="text-xs sm:text-sm text-gray-400">{displayEmail}</p>
+                {user?.role && (
+                  <span className="text-xs text-purple-400 capitalize">{user.role}</span>
+                )}
               </div>
             </div>
             <hr className="my-1 sm:my-2 border-gray-600" />
             <div className="flex flex-col gap-1 sm:gap-2">
-              <Link
-                href="/account"
-                className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 bg-[#505050] rounded-lg p-1 sm:p-2"
-              >
+              <Link href="/account" className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 bg-[#505050] rounded-lg p-1 sm:p-2">
                 <FaCog size={14} className="sm:text-lg" />
                 Account
               </Link>
-              <Link
-                href="/developer/signup"
-                className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 bg-[#505050] rounded-lg p-1 sm:p-2"
-              >
-                <FaUserPlus size={14} className="sm:text-lg" />
-                Sign Up as Developer
-              </Link>
-              <Link
-                href="/"
-                className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 bg-[#505050] rounded-lg p-1 sm:p-2"
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1 sm:gap-2 hover:text-purple-500 bg-[#505050] rounded-lg p-1 sm:p-2 w-full text-left"
               >
                 <FaSignOutAlt size={14} className="sm:text-lg" />
-                Log Out
-              </Link>
+                Switch Role / Log Out
+              </button>
             </div>
           </motion.div>
         )}

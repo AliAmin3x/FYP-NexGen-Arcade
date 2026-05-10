@@ -1,6 +1,4 @@
-// app/discover/DiscoverClient.js
 "use client";
-
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -8,64 +6,47 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import Image from "next/image";
-import { db, auth } from "../../firebase";
-import { doc, getDoc, collection, addDoc } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSession } from "../../lib/SessionContext";
 
 const DiscoverClient = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const gameId = searchParams.get("gameId");
+  const { user } = useSession();
   const [gameDetails, setGameDetails] = useState(null);
-  const [currentImage, setCurrentImage] = useState("");
 
   useEffect(() => {
-    const fetchGameDetails = async () => {
-      if (gameId) {
-        try {
-          const gameDocRef = doc(db, "games", gameId);
-          const gameDoc = await getDoc(gameDocRef);
-          if (gameDoc.exists()) {
-            const gameData = gameDoc.data();
-            setGameDetails(gameData);
-            setCurrentImage(gameData.imageUrl);
-          } else {
-            console.error("No such game!");
-          }
-        } catch (e) {
-          console.error("Error fetching game details: ", e);
-        }
-      }
-    };
-
-    fetchGameDetails();
+    if (!gameId) return;
+    fetch(`/api/games/${gameId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) { console.error("Game not found"); return; }
+        setGameDetails(data);
+      })
+      .catch((e) => console.error("Error fetching game details:", e));
   }, [gameId]);
 
-  if (!gameDetails) return <div>Loading...</div>;
-
-  const handlePrevImage = () => {};
-  const handleNextImage = () => {};
+  if (!gameDetails) return <div className="bg-[#181818] min-h-screen flex items-center justify-center text-white">Loading...</div>;
 
   const handleAddToCart = async () => {
+    if (!user) { toast.error("Please select a role first"); return; }
     try {
-      const user = auth.currentUser;
-      if (!user) {
-        toast.error("User not logged in");
-        return;
-      }
-
-      const cartCollectionRef = collection(db, "cart");
-      await addDoc(cartCollectionRef, {
-        uid: user.uid,
-        name: gameDetails.title,
-        price: gameDetails.price,
-        image: gameDetails.imageUrl,
-        description: gameDetails.description,
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: gameDetails.title,
+          price: gameDetails.price,
+          image: gameDetails.imageUrl,
+          description: gameDetails.description,
+        }),
       });
+      if (!res.ok) throw new Error((await res.json()).error);
       toast.success("Game added to cart successfully!");
     } catch (e) {
-      toast.error("Error adding game to cart!");
+      toast.error("Error adding game to cart: " + e.message);
     }
   };
 
@@ -73,31 +54,21 @@ const DiscoverClient = () => {
     <div className="bg-[#181818] flex flex-col min-h-screen">
       <Navbar />
       <div className="container mx-auto text-white py-8 px-4">
-        <motion.h2 className="text-4xl text-center font-semibold mb-8">
-          Discover
-        </motion.h2>
+        <motion.h2 className="text-4xl text-center font-semibold mb-8">Discover</motion.h2>
         <motion.div className="flex flex-col items-center">
           <div className="relative w-full md:w-2/3 flex justify-center items-center mb-8">
-            <button onClick={handlePrevImage} className="absolute left-0 text-white text-2xl bg-gray-700 rounded-full p-2 hover:bg-purple-500 transition-colors duration-300">
-              <AiOutlineLeft />
-            </button>
             <Image
-              src={currentImage}
+              src={gameDetails.imageUrl}
               alt={gameDetails.title}
               className="rounded-lg"
               width={800}
               height={450}
-              layout="responsive"
+              style={{ width: "100%", height: "auto" }}
             />
-            <button onClick={handleNextImage} className="absolute right-0 text-white text-2xl bg-gray-700 rounded-full p-2 hover:bg-purple-500 transition-colors duration-300">
-              <AiOutlineRight />
-            </button>
           </div>
           <div className="mt-8 w-full md:w-3/4 pl-12 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-4">
-              Game Title: {gameDetails.title}
-            </h3>
-            <p className="mb-2"><strong>Publisher:</strong> Ali Amin</p>
+            <h3 className="text-xl font-semibold mb-4">Game Title: {gameDetails.title}</h3>
+            <p className="mb-2"><strong>Publisher:</strong> NexGen Developer</p>
             <p className="mb-2"><strong>Genre:</strong> {gameDetails.category}</p>
             <p className="mb-4"><strong>Description:</strong> {gameDetails.description}</p>
             <div className="flex justify-end gap-4">

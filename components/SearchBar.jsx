@@ -1,67 +1,30 @@
-import React, { useState, useEffect } from "react";
+"use client";
+import React, { useState, useEffect, useCallback } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { TbAdjustmentsSearch } from "react-icons/tb";
-import { firestore } from "../firebase";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  startAt,
-  endAt,
-} from "firebase/firestore";
-import debounce from "lodash.debounce";
-
-const gamesRef = collection(firestore, "games");
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [games, setGames] = useState([]);
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        if (searchTerm.trim() === "") {
-          setGames([]);
-          return;
-        }
-        const formattedTerm = searchTerm.trim().charAt(0).toUpperCase() + searchTerm.trim().slice(1).toLowerCase();
-        const q = query(
-          gamesRef,
-          where("title", ">=", formattedTerm),
-          where("title", "<=", formattedTerm + "\uf8ff")
-        );
-
-        const querySnapshot = await getDocs(q);
-
-        const gameList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        
-        setGames(gameList);
-      } catch (error) {
-        console.error("Error searching games:", error);
-      }
-    };
-
-    const debouncedFetchGames = debounce(fetchGames, 300);
-
-    if (searchTerm.trim() !== "") {
-      debouncedFetchGames();
-    } else {
+  const fetchGames = useCallback(async (term) => {
+    if (!term.trim()) { setGames([]); return; }
+    try {
+      const res = await fetch(`/api/games?status=Approved`);
+      const data = await res.json();
+      const filtered = (Array.isArray(data) ? data : []).filter((g) =>
+        g.title?.toLowerCase().includes(term.toLowerCase())
+      );
+      setGames(filtered);
+    } catch {
       setGames([]);
     }
+  }, []);
 
-    return () => {
-      debouncedFetchGames.cancel();
-    };
-  }, [searchTerm]);
+  useEffect(() => {
+    const timer = setTimeout(() => fetchGames(searchTerm), 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm, fetchGames]);
 
   return (
     <div className="relative w-full mt-4 flex flex-col items-center">
@@ -72,7 +35,7 @@ const SearchBar = () => {
             type="text"
             placeholder="Search for games..."
             value={searchTerm}
-            onChange={handleSearch}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full h-full px-2 sm:px-4 bg-transparent outline-none text-white font-normal text-sm sm:text-base"
           />
         </div>
@@ -80,17 +43,13 @@ const SearchBar = () => {
       </div>
       {searchTerm && games.length > 0 && (
         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-full max-w-screen-md mt-2 bg-[#181818] border border-gray-700 rounded-md z-10 flex flex-col items-center">
-          {games.map((game, index) => (
+          {games.map((game) => (
             <div
-              key={index}
+              key={game.id}
               className="flex items-center bg-[#303030] hover:bg-[#606060] text-white p-2 rounded-md mb-2 w-full transition-all duration-300 ease-in-out"
             >
               {game.imageUrl ? (
-                <img
-                  src={game.imageUrl}
-                  alt={game.title}
-                  className="w-16 h-16 rounded-md mr-4"
-                />
+                <img src={game.imageUrl} alt={game.title} className="w-16 h-16 rounded-md mr-4" />
               ) : (
                 <div className="w-16 h-16 rounded-md mr-4 bg-gray-600 flex items-center justify-center">
                   <span className="text-sm text-white">No Image</span>

@@ -13,26 +13,15 @@ export function SessionProvider({ children }) {
       .catch(() => setUser(null));
   }, []);
 
-  const login = async (email, password) => {
-    const res = await fetch("/api/auth/login", {
+  // Dev-mode: pick a role without any password
+  const switchRole = async (role) => {
+    const res = await fetch("/api/auth/switch-role", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ role }),
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Login failed");
-    setUser(data.user);
-    return data.user;
-  };
-
-  const signup = async (username, email, password) => {
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Signup failed");
+    if (!res.ok) throw new Error(data.error || "Role switch failed");
     setUser(data.user);
     return data.user;
   };
@@ -43,7 +32,7 @@ export function SessionProvider({ children }) {
   };
 
   return (
-    <SessionContext.Provider value={{ user, login, signup, logout }}>
+    <SessionContext.Provider value={{ user, switchRole, logout }}>
       {children}
     </SessionContext.Provider>
   );
