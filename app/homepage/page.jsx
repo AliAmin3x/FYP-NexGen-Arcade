@@ -6,40 +6,13 @@ import Footer from "../../components/Footer";
 import RecommendedGames from "../../components/RecommendedGames";
 import FeaturedGames from "../../components/FeaturedGames";
 import FreeGames from "../../components/FreeGames";
-import { auth } from "../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { useState, useEffect } from "react";
+import { useSession } from "../../lib/SessionContext";
 
 const HomePage = () => {
-  const [userEmail, setUserEmail] = useState("");
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserEmail(user.email);
-
-        const db = getDatabase();
-        const userRef = ref(db, "users/" + user.uid);
-        onValue(userRef, (snapshot) => {
-          const userData = snapshot.val();
-          if (userData) {
-            setUsername(userData.username);
-          }
-        });
-      } else {
-        setUserEmail("");
-        setUsername("");
-      }
-    });
-
-    return unsubscribe;
-  }, []);
-
+  const { user } = useSession();
   return (
     <div>
-      <Navbar userEmail={userEmail} username={username} />
+      <Navbar userEmail={user?.email} username={user?.username} />
       <HeroSection />
       <RecommendedGames />
       <FeaturedGames />
