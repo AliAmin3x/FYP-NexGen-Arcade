@@ -3,85 +3,114 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { SectionHeader } from "./FeaturedGames";
 
-const cardAnimation = { initial: { opacity: 0, y: 50 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5 } };
+const FALLBACK = [
+  { id: 'r1', title: 'Baldur\'s Gate 3', category: 'RPG', price: '7499', imageUrl: '/img1.jpg', description: 'Deep CRPG' },
+  { id: 'r2', title: 'Hogwarts Legacy', category: 'Adventure', price: '5999', imageUrl: '/img2.jpg', description: 'Magical RPG' },
+  { id: 'r3', title: 'Starfield', category: 'Open-World', price: '6999', imageUrl: '/img3.jpg', description: 'Space exploration' },
+  { id: 'r4', title: 'Lies of P', category: 'Action', price: '4299', imageUrl: '/img4.jpg', description: 'Soulslike action' },
+];
 
 const RecommendedGames = () => {
   const router = useRouter();
   const [games, setGames] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+  const [favs, setFavs] = useState({});
 
   useEffect(() => {
     fetch("/api/games?type=recommended&status=Approved")
       .then(r => r.json())
       .then(data => {
         const arr = Array.isArray(data) ? data : [];
-        const shuffled = [...arr].sort(() => 0.5 - Math.random()).slice(0, 6);
-        setGames(shuffled);
-        setFavorites(shuffled.map(() => false));
+        const shuffled = [...arr].sort(() => 0.5 - Math.random()).slice(0, 4);
+        setGames(shuffled.length > 0 ? shuffled : FALLBACK);
       })
-      .catch(e => console.error(e));
+      .catch(() => setGames(FALLBACK));
   }, []);
 
-  const handleFavourite = async (game, index) => {
-    try {
-      if (favorites[index]) {
-        toast.info("Remove via Favourites page");
-      } else {
-        const res = await fetch("/api/favorites", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ gameId: game.id, name: game.title, price: game.price, image: game.imageUrl }),
-        });
-        if (!res.ok) { toast.error("Must be logged in to favourite"); return; }
-        toast.success("Added to favorites!");
-      }
-      setFavorites(favorites.map((f, i) => i === index ? !f : f));
-    } catch (e) {
-      toast.error("Error handling favorite!");
-    }
+  const handleFav = async (game) => {
+    if (favs[game.id]) { toast.info("Remove via Favourites page"); return; }
+    const res = await fetch("/api/favorites", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameId: game.id, name: game.title, price: game.price, image: game.imageUrl }),
+    });
+    if (!res.ok) { toast.error("Must be logged in"); return; }
+    setFavs(p => ({...p, [game.id]: true}));
+    toast.success("Added to wishlist!");
   };
 
-  const handleAddToCart = async (game, event) => {
-    event.stopPropagation();
-    try {
-      const res = await fetch("/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: game.title, price: game.price, image: game.imageUrl, description: game.description }),
-      });
-      if (!res.ok) { toast.error("Must be logged in to add to cart"); return; }
-      toast.success("Game added to cart!");
-    } catch (e) {
-      toast.error("Error adding to cart!");
-    }
+  const handleCart = async (game, e) => {
+    e.stopPropagation();
+    const res = await fetch("/api/cart", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: game.title, price: game.price, image: game.imageUrl, description: game.description }),
+    });
+    if (!res.ok) { toast.error("Must be logged in"); return; }
+    toast.success("Added to cart!");
   };
 
   return (
-    <div className="px-24 py-8 bg-[#181818]">
-      <h2 className="text-3xl text-center text-white font-semibold mb-4">Recommended Games</h2>
-      <motion.div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {games.map((game, index) => (
-          <motion.div key={game.id} className="relative bg-[#303030] shadow-purple-300 p-4 rounded-lg shadow-md h-[440px]" whileHover={{ scale: 1.05, boxShadow: "0px 4px 8px rgba(0,0,0,0.1)", transition: { duration: 0.3 } }} {...cardAnimation} onClick={() => router.push(`/discover?gameId=${game.id}`)}>
-            <div className="w-full h-[308px] relative mb-2">
-              <Image layout="fill" objectFit="cover" src={game.imageUrl} alt={game.title} className="rounded-lg" />
-            </div>
-            <h3 className="text-white text-lg font-semibold">{game.title}</h3>
-            <p className="text-gray-300">PKR {game.price}</p>
-            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="mt-2 bg-[#71319f] text-white px-4 py-2 rounded-md" onClick={e => handleAddToCart(game, e)}>Add to Cart</motion.button>
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="absolute bottom-2 right-2">
-              {favorites[index]
-                ? <AiFillHeart size={24} onClick={() => handleFavourite(game, index)} className="cursor-pointer text-purple-400" />
-                : <AiOutlineHeart size={24} onClick={() => handleFavourite(game, index)} className="cursor-pointer text-purple-400" />}
+    <section className="py-16 px-4 sm:px-6" style={{background:'linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%)'}}>
+      <div className="max-w-7xl mx-auto">
+        <SectionHeader title="Recommended for You" subtitle="Based on Your Taste" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {games.map((game, i) => (
+            <motion.div key={game.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.4 }}
+              className="game-card group cursor-pointer" onClick={() => router.push(`/discover?gameId=${game.id}`)}>
+              
+              <div className="relative aspect-video overflow-hidden">
+                <Image src={game.imageUrl} alt={game.title} fill style={{objectFit:'cover'}} className="transition-transform duration-500 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                
+                {/* Category pill */}
+                {game.category && (
+                  <div className="absolute top-2 left-2">
+                    <span className="genre-badge">{game.category}</span>
+                  </div>
+                )}
+
+                {/* Fav */}
+                <button onClick={(e) => { e.stopPropagation(); handleFav(game); }}
+                  className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/50 backdrop-blur-sm border border-white/10 hover:border-pink-400/40 transition-all">
+                  {favs[game.id] ? <AiFillHeart size={14} className="text-pink-400" /> : <AiOutlineHeart size={14} className="text-white/70" />}
+                </button>
+
+                {/* Price overlay */}
+                <div className="absolute bottom-2 left-2">
+                  <span className="text-sm font-bold gradient-text-cyan" style={{fontFamily:'var(--font-display)'}}>
+                    {!game.price || game.price === '0' ? 'FREE' : `PKR ${game.price}`}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4">
+                <h3 className="text-white font-bold mb-3 group-hover:text-cyan-400 transition-colors" style={{fontFamily:'var(--font-body)', fontSize:'1rem'}}>
+                  {game.title}
+                </h3>
+                <p className="text-xs text-slate-400 mb-4 line-clamp-2 leading-relaxed" style={{fontFamily:'var(--font-ui)'}}>
+                  {game.description || "An epic gaming experience awaits you."}
+                </p>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  onClick={(e) => handleCart(game, e)}
+                  className="w-full py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all duration-200"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0,212,255,0.15), rgba(59,130,246,0.15))',
+                    border: '1px solid rgba(0,212,255,0.3)',
+                    color: '#00d4ff',
+                    fontFamily: 'var(--font-display)',
+                    letterSpacing: '0.08em'
+                  }}>
+                  ADD TO CART
+                </motion.button>
+              </div>
             </motion.div>
-          </motion.div>
-        ))}
-      </motion.div>
-      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} closeOnClick pauseOnHover draggable />
-    </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
