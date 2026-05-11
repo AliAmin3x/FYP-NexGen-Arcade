@@ -18,21 +18,28 @@ export const SectionHeader = ({ title, subtitle, link, linkLabel }) => {
   const router = useRouter();
   return (
     <div className="flex items-end justify-between mb-10">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2.5">
         <div className="flex items-center gap-3">
-          <div className="w-1 h-5 rounded-full" style={{background:'linear-gradient(to bottom, var(--accent-red), var(--accent-gold))'}} />
-          <span style={{fontFamily:'var(--font-mono)', fontSize:'0.62rem', letterSpacing:'0.28em', color:'var(--accent-gold)', textTransform:'uppercase'}}>
+          <div className="w-1 h-4 rounded-full" style={{background:'linear-gradient(to bottom, var(--accent-red), var(--accent-gold))'}} />
+          <span style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem', letterSpacing:'0.3em', color:'var(--accent-gold)', textTransform:'uppercase', fontWeight:600}}>
             {subtitle}
           </span>
         </div>
-        <h2 style={{fontFamily:'var(--font-display)', fontSize:'clamp(1.8rem,4vw,2.6rem)', lineHeight:0.95, color:'var(--text-primary)', letterSpacing:'0.04em'}}>
+        <h2 style={{
+          fontFamily:'var(--font-display)',
+          fontSize:'clamp(1.9rem,4.5vw,2.8rem)',
+          lineHeight:0.92,
+          color:'var(--text-primary)',
+          letterSpacing:'-0.01em',
+          fontWeight:800,
+        }}>
           {title}
         </h2>
       </div>
       {link && (
         <button onClick={() => router.push(link)}
           className="flex items-center gap-2 transition-all duration-200 group"
-          style={{fontFamily:'var(--font-heading)', fontWeight:700, fontSize:'0.78rem', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--text-muted)'}}>
+          style={{fontFamily:'var(--font-display)', fontWeight:700, fontSize:'0.8rem', letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--text-muted)'}}>
           <span className="group-hover:text-amber-400 transition-colors">{linkLabel}</span>
           <svg className="w-3.5 h-3.5 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -81,18 +88,17 @@ const FeaturedGames = () => {
 
   return (
     <section className="py-20 px-4 sm:px-6 relative" style={{background:'var(--bg-primary)'}}>
-      {/* Background grid decoration */}
-      <div className="absolute inset-0 grid-lines opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 grid-lines opacity-35 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionHeader title="Featured Games" subtitle="Handpicked for You" link="/featuredGames" linkLabel="View All" />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {games.map((game, i) => (
             <motion.div key={game.id}
-              initial={{ opacity:0, y:24 }}
+              initial={{ opacity:0, y:28 }}
               whileInView={{ opacity:1, y:0 }}
               viewport={{ once:true }}
-              transition={{ delay:i * 0.08, duration:0.45 }}>
+              transition={{ delay:i * 0.07, duration:0.5, ease:[0.16,1,0.3,1] }}>
               <GameCard game={game} isFav={favorites[game.id]}
                 onFav={() => handleFav(game)}
                 onCart={(e) => handleCart(game, e)}
