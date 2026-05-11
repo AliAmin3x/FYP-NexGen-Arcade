@@ -7,18 +7,33 @@ import Image from "next/image";
 
 const roles = [
   {
-    id: "user", label: "Player", description: "Browse, buy, and play games",
-    icon: "🎮", redirect: "/homepage", accent: "#00d4ff",
+    id: "user",
+    label: "PLAYER",
+    description: "Browse, buy & play games",
+    icon: "🎮",
+    redirect: "/homepage",
+    accent: "#e8b923",
+    accentRgb: "232,185,35",
     features: ["Browse 1,200+ games", "Manage wishlist", "Track purchases"],
   },
   {
-    id: "developer", label: "Developer", description: "Upload and manage your games",
-    icon: "⚙️", redirect: "/dashboard", accent: "#8b5cf6",
+    id: "developer",
+    label: "DEVELOPER",
+    description: "Upload & manage your games",
+    icon: "⚙️",
+    redirect: "/dashboard",
+    accent: "#6933ff",
+    accentRgb: "105,51,255",
     features: ["Upload games", "View analytics", "Manage revenue"],
   },
   {
-    id: "admin", label: "Admin", description: "Approve games and manage the platform",
-    icon: "🛡️", redirect: "/admin/game-approvals", accent: "#f97316",
+    id: "admin",
+    label: "ADMIN",
+    description: "Approve games & manage platform",
+    icon: "🛡️",
+    redirect: "/admin/game-approvals",
+    accent: "#e8192c",
+    accentRgb: "232,25,44",
     features: ["Approve submissions", "Manage users", "Platform analytics"],
   },
 ];
@@ -43,96 +58,163 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{background:'var(--bg-primary)'}}>
-      {/* Background effects */}
-      <div className="absolute inset-0" style={{
-        background: `radial-gradient(ellipse 70% 50% at 20% 50%, rgba(0,212,255,0.06) 0%, transparent 60%),
-                     radial-gradient(ellipse 50% 60% at 80% 50%, rgba(139,92,246,0.06) 0%, transparent 60%)`
-      }} />
-      
-      {/* Animated grid */}
-      <div className="absolute inset-0 opacity-20" style={{
-        backgroundImage: `linear-gradient(rgba(0,212,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.1) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px',
-        maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent)'
-      }} />
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      style={{background:'var(--bg-void)'}}>
+
+      {/* ── Background effects ── */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Grid lines */}
+        <div className="absolute inset-0 grid-lines opacity-30" />
+        {/* Radial gradients */}
+        <div className="absolute inset-0" style={{
+          background:`
+            radial-gradient(ellipse 60% 50% at 10% 50%, rgba(232,185,35,0.04) 0%, transparent 55%),
+            radial-gradient(ellipse 60% 50% at 90% 50%, rgba(232,25,44,0.04)  0%, transparent 55%)
+          `
+        }} />
+        {/* Scanlines */}
+        <div className="absolute inset-0" style={{
+          backgroundImage:'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px)',
+          opacity: 0.6
+        }} />
+      </div>
 
       <div className="relative z-10 w-full max-w-3xl">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          className="text-center mb-12">
-          <div className="flex justify-center mb-6">
+
+        {/* ── Header ── */}
+        <motion.div initial={{ opacity:0, y:-30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
+          className="text-center mb-14">
+
+          <div className="flex justify-center mb-8">
             <div className="relative">
-              <Image src="/logo.png" alt="NexGen" width={60} height={60} />
-              <div className="absolute inset-0 bg-cyan-400/30 blur-xl rounded-full" />
+              <div className="absolute inset-0 bg-red-500/20 blur-2xl rounded-full scale-150" />
+              <div className="relative w-16 h-16">
+                <Image src="/logo.png" alt="NexGen" fill style={{objectFit:'contain'}} />
+              </div>
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-3" style={{fontFamily:'var(--font-display)', letterSpacing:'-0.02em'}}>
-            NEXGEN <span className="gradient-text-cyan">ARCADE</span>
-          </h1>
-          <p className="text-slate-400 text-sm" style={{fontFamily:'var(--font-ui)'}}>
-            Select your role to continue
-          </p>
+
+          <div className="flex flex-col items-center gap-2 mb-4">
+            <h1 style={{fontFamily:'var(--font-display)', fontSize:'clamp(2.5rem,7vw,4rem)', lineHeight:0.9, letterSpacing:'0.05em', color:'#fff'}}>
+              NEXGEN{" "}
+              <span className="gradient-fire">ARCADE</span>
+            </h1>
+            <div className="flex items-center gap-3">
+              <div className="h-px w-16" style={{background:'linear-gradient(to right, transparent, rgba(232,185,35,0.4))'}} />
+              <span style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem', letterSpacing:'0.3em', color:'var(--text-muted)', textTransform:'uppercase'}}>
+                Select Your Role
+              </span>
+              <div className="h-px w-16" style={{background:'linear-gradient(to left, transparent, rgba(232,185,35,0.4))'}} />
+            </div>
+          </div>
         </motion.div>
 
+        {/* ── Error ── */}
         {error && (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="text-red-400 text-center mb-6 text-sm p-3 rounded-lg bg-red-400/10 border border-red-400/20"
-            style={{fontFamily:'var(--font-ui)'}}>
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }}
+            className="mb-6 p-3 rounded text-center text-sm"
+            style={{background:'rgba(232,25,44,0.08)', border:'1px solid rgba(232,25,44,0.2)', color:'#ff6b7a', fontFamily:'var(--font-body)'}}>
             {error}
-          </motion.p>
+          </motion.div>
         )}
 
-        {/* Role cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* ── Role cards ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {roles.map((role, i) => (
-            <motion.button
-              key={role.id}
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              whileHover={{ y: -4, scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={() => handleRoleSelect(role)}
-              onMouseEnter={() => setHovered(role.id)} onMouseLeave={() => setHovered(null)}
-              disabled={!!loading}
-              className="relative text-left p-6 rounded-2xl border transition-all duration-300 disabled:opacity-60 disabled:cursor-wait overflow-hidden"
-              style={{
-                background: hovered === role.id ? `rgba(${role.accent === '#00d4ff' ? '0,212,255' : role.accent === '#8b5cf6' ? '139,92,246' : '249,115,22'},0.08)` : 'var(--bg-card)',
-                borderColor: hovered === role.id ? role.accent + '60' : 'rgba(255,255,255,0.06)',
-                boxShadow: hovered === role.id ? `0 0 30px ${role.accent}20, 0 20px 40px rgba(0,0,0,0.3)` : 'none',
-              }}>
-              
-              {/* Accent corner */}
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-bl-full opacity-20" style={{background: role.accent}} />
+            <motion.div key={role.id}
+              initial={{ opacity:0, y:40 }}
+              animate={{ opacity:1, y:0 }}
+              transition={{ delay:0.1 + i*0.12, duration:0.5 }}
+              onHoverStart={() => setHovered(role.id)}
+              onHoverEnd={() => setHovered(null)}>
 
-              <div className="text-4xl mb-4">{role.icon}</div>
-              
-              <p className="text-lg font-black text-white mb-1" style={{fontFamily:'var(--font-display)', letterSpacing:'0.05em'}}>
-                {loading === role.id ? "Loading..." : role.label}
-              </p>
-              <p className="text-xs text-slate-400 mb-5" style={{fontFamily:'var(--font-ui)'}}>{role.description}</p>
-              
-              <ul className="space-y-1.5">
-                {role.features.map(f => (
-                  <li key={f} className="flex items-center gap-2 text-xs text-slate-300" style={{fontFamily:'var(--font-ui)'}}>
-                    <span className="w-1 h-1 rounded-full flex-shrink-0" style={{background: role.accent}} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <motion.button
+                whileHover={{ y:-5, scale:1.02 }}
+                whileTap={{ scale:0.97 }}
+                onClick={() => handleRoleSelect(role)}
+                disabled={loading !== null}
+                className="w-full flex flex-col items-center text-left rounded-lg p-6 relative overflow-hidden transition-all duration-300"
+                style={{
+                  background: hovered === role.id ? `rgba(${role.accentRgb},0.06)` : 'rgba(12,14,29,0.8)',
+                  border:`1px solid ${hovered === role.id ? `rgba(${role.accentRgb},0.4)` : 'rgba(255,255,255,0.06)'}`,
+                  backdropFilter:'blur(20px)',
+                  boxShadow: hovered === role.id ? `0 20px 60px rgba(${role.accentRgb},0.15), 0 0 0 1px rgba(${role.accentRgb},0.1)` : 'none'
+                }}>
 
-              <div className="mt-5 flex items-center gap-2 text-xs font-bold tracking-widest uppercase" style={{color: role.accent, fontFamily:'var(--font-display)', letterSpacing:'0.12em'}}>
-                Enter
-                <svg className={`w-3 h-3 transition-transform duration-200 ${hovered === role.id ? 'translate-x-1' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </div>
-            </motion.button>
+                {/* Background glow */}
+                <motion.div className="absolute inset-0 pointer-events-none"
+                  animate={{ opacity: hovered === role.id ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{background:`radial-gradient(ellipse 80% 80% at 50% 100%, rgba(${role.accentRgb},0.12), transparent 70%)`}} />
+
+                {/* Top accent bar */}
+                <motion.div className="absolute top-0 left-0 right-0 h-0.5"
+                  animate={{ scaleX: hovered === role.id ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{background:`linear-gradient(to right, transparent, rgba(${role.accentRgb},0.8), transparent)`, transformOrigin:'center'}} />
+
+                {/* Icon */}
+                <div className="relative z-10 mb-5 w-14 h-14 flex items-center justify-center rounded text-3xl"
+                  style={{
+                    background:`rgba(${role.accentRgb},0.1)`,
+                    border:`1px solid rgba(${role.accentRgb},0.2)`
+                  }}>
+                  {role.icon}
+                </div>
+
+                <div className="relative z-10 w-full">
+                  <h3 className="mb-1" style={{
+                    fontFamily:'var(--font-display)',
+                    fontSize:'1.5rem',
+                    lineHeight:0.9,
+                    letterSpacing:'0.08em',
+                    color: hovered === role.id ? role.accent : 'var(--text-primary)'
+                  }}>
+                    {role.label}
+                  </h3>
+                  <p className="mb-5" style={{fontFamily:'var(--font-body)', fontSize:'0.78rem', color:'var(--text-muted)', fontWeight:300, lineHeight:1.5}}>
+                    {role.description}
+                  </p>
+
+                  <ul className="flex flex-col gap-2">
+                    {role.features.map(f => (
+                      <li key={f} className="flex items-center gap-2"
+                        style={{fontFamily:'var(--font-body)', fontSize:'0.75rem', color:'var(--text-secondary)'}}>
+                        <div className="w-1 h-1 rounded-full flex-shrink-0" style={{background:role.accent}} />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Enter indicator */}
+                <motion.div className="relative z-10 mt-6 w-full flex items-center justify-between"
+                  animate={{ opacity: hovered === role.id ? 1 : 0.4 }}>
+                  <div className="h-px flex-1" style={{background:`rgba(${role.accentRgb},0.2)`}} />
+                  <div className="flex items-center gap-2 px-3">
+                    {loading === role.id ? (
+                      <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" style={{color:role.accent}} />
+                    ) : (
+                      <>
+                        <span style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem', letterSpacing:'0.2em', color:role.accent}}>ENTER</span>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} style={{color:role.accent}}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </>
+                    )}
+                  </div>
+                  <div className="h-px flex-1" style={{background:`rgba(${role.accentRgb},0.2)`}} />
+                </motion.div>
+              </motion.button>
+            </motion.div>
           ))}
         </div>
 
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-          className="text-center mt-8 text-xs text-slate-600" style={{fontFamily:'var(--font-ui)'}}>
-          NexGen Arcade — Dev Mode — Authentication bypassed
+        {/* Footer note */}
+        <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.6 }}
+          className="text-center mt-10"
+          style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem', letterSpacing:'0.22em', color:'var(--text-muted)', textTransform:'uppercase'}}>
+          NexGen Arcade · Premium Digital Game Store
         </motion.p>
       </div>
     </div>
