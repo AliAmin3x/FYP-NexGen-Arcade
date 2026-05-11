@@ -96,7 +96,7 @@ const FreeGames = () => {
 
                 {/* Title overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-2">
-                  <p className="text-xs font-bold text-white truncate" style={{fontFamily:'var(--font-heading)', fontWeight:700}}>
+                  <p className="text-xs font-bold text-white truncate" style={{fontFamily:'Barlow Condensed', sans-serif, fontWeight:700}}>
                     {game.title}
                   </p>
                 </div>
@@ -107,7 +107,7 @@ const FreeGames = () => {
               </div>
 
               <div className="p-3 flex items-center justify-between">
-                <span style={{fontFamily:'var(--font-mono)', fontSize:'0.78rem', color:'var(--accent-emerald)', fontWeight:700}}>
+                <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.78rem', color:'var(--accent-emerald)', fontWeight:700}}>
                   FREE
                 </span>
                 <motion.button whileHover={{ scale:1.08 }} whileTap={{ scale:0.93 }}
@@ -117,7 +117,7 @@ const FreeGames = () => {
                     background:'rgba(0,214,143,0.12)',
                     border:'1px solid rgba(0,214,143,0.3)',
                     color:'var(--accent-emerald)',
-                    fontFamily:'var(--font-heading)',
+                    fontFamily:'Barlow Condensed', sans-serif,
                     letterSpacing:'0.12em',
                     fontSize:'0.68rem'
                   }}>

@@ -44,7 +44,7 @@ const SOCIAL_ICONS = {
 };
 
 const Footer = () => (
-  <footer className="relative" style={{ background:'var(--bg-void)', borderTop:'1px solid rgba(232,185,35,0.07)' }}>
+  <footer className="relative" style={{ background:'var(--bg-void)', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
     {/* Top accent line */}
     <div className="h-px w-full" style={{
       background:'linear-gradient(to right, transparent 0%, rgba(232,25,44,0.5) 25%, rgba(232,185,35,0.6) 50%, rgba(105,51,255,0.4) 75%, transparent 100%)'
@@ -61,16 +61,16 @@ const Footer = () => (
               <Image src="/logo.png" alt="NexGen" fill style={{objectFit:'contain'}} className="relative z-10" />
             </div>
             <div className="flex flex-col leading-none gap-0.5">
-              <span className="gradient-gold tracking-[0.2em]" style={{fontFamily:'var(--font-display)', fontSize:'1.1rem', lineHeight:1}}>
+              <span className="text-white tracking-[0.2em]" style={{fontFamily:'Barlow Condensed', sans-serif, fontSize:'1.1rem', lineHeight:1}}>
                 NEXGEN
               </span>
-              <span style={{fontFamily:'var(--font-mono)', fontSize:'0.5rem', letterSpacing:'0.4em', color:'rgba(232,25,44,0.6)', lineHeight:1}}>
+              <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.5rem', letterSpacing:'0.4em', color:'rgba(232,25,44,0.6)', lineHeight:1}}>
                 ARCADE
               </span>
             </div>
           </Link>
 
-          <p style={{fontFamily:'var(--font-body)', fontSize:'0.82rem', lineHeight:1.65, color:'var(--text-muted)', fontWeight:300}}>
+          <p style={{fontFamily:'DM Sans', sans-serif, fontSize:'0.82rem', lineHeight:1.65, color:'var(--text-muted)', fontWeight:300}}>
             Your premier destination for digital games. Discover, buy, and play the best titles across all genres.
           </p>
 
@@ -90,7 +90,7 @@ const Footer = () => (
         {Object.entries(LINKS).map(([section, links]) => (
           <div key={section} className="flex flex-col gap-4">
             <h4 style={{
-              fontFamily:'var(--font-heading)',
+              fontFamily:'Barlow Condensed', sans-serif,
               fontWeight:700,
               fontSize:'0.78rem',
               letterSpacing:'0.2em',
@@ -104,7 +104,7 @@ const Footer = () => (
                 <li key={link.label}>
                   <Link href={link.href}
                     className="transition-colors duration-200 hover:text-amber-400"
-                    style={{fontFamily:'var(--font-body)', fontSize:'0.82rem', color:'var(--text-muted)', fontWeight:300}}>
+                    style={{fontFamily:'DM Sans', sans-serif, fontSize:'0.82rem', color:'var(--text-muted)', fontWeight:300}}>
                     {link.label}
                   </Link>
                 </li>
@@ -117,12 +117,12 @@ const Footer = () => (
       {/* Bottom bar */}
       <div className="mt-14 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
         style={{borderTop:'1px solid rgba(255,255,255,0.04)'}}>
-        <p style={{fontFamily:'var(--font-mono)', fontSize:'0.62rem', letterSpacing:'0.14em', color:'var(--text-muted)'}}>
+        <p style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.62rem', letterSpacing:'0.14em', color:'var(--text-muted)'}}>
           © {new Date().getFullYear()} NEXGEN ARCADE. ALL RIGHTS RESERVED.
         </p>
         <div className="flex items-center gap-2.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem', letterSpacing:'0.18em', color:'var(--text-muted)'}}>
+          <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.6rem', letterSpacing:'0.18em', color:'var(--text-muted)'}}>
             ALL SYSTEMS OPERATIONAL
           </span>
         </div>

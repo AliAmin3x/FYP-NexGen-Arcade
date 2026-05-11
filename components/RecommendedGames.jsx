@@ -105,7 +105,7 @@ const RecommendedGames = () => {
 
                   {/* Price */}
                   <div className="absolute bottom-2.5 left-2.5">
-                    <span style={{fontFamily:'var(--font-mono)', fontSize:'0.9rem', fontWeight:700,
+                    <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.9rem', fontWeight:700,
                       color: isFree ? 'var(--accent-emerald)' : 'var(--accent-gold)'}}>
                       {isFree ? 'FREE' : `PKR ${game.price}`}
                     </span>
@@ -118,11 +118,11 @@ const RecommendedGames = () => {
 
                 <div className="p-4 flex flex-col gap-3">
                   <h3 className="font-bold group-hover:text-amber-300 transition-colors leading-tight"
-                    style={{fontFamily:'var(--font-heading)', fontWeight:700, fontSize:'1rem', letterSpacing:'0.03em', color:'var(--text-primary)'}}>
+                    style={{fontFamily:'Barlow Condensed', sans-serif, fontWeight:700, fontSize:'1rem', letterSpacing:'0.03em', color:'var(--text-primary)'}}>
                     {game.title}
                   </h3>
                   <p className="line-clamp-2 leading-relaxed"
-                    style={{fontFamily:'var(--font-body)', fontSize:'0.78rem', color:'var(--text-muted)', fontWeight:300}}>
+                    style={{fontFamily:'DM Sans', sans-serif, fontSize:'0.78rem', color:'var(--text-muted)', fontWeight:300}}>
                     {game.description || "An epic gaming experience awaits you."}
                   </p>
                   <motion.button whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}
@@ -132,7 +132,7 @@ const RecommendedGames = () => {
                       background:`rgba(${accent.replace('#','').match(/../g).map(h=>parseInt(h,16)).join(',')},0.08)`,
                       border:`1px solid ${accent}30`,
                       color: accent,
-                      fontFamily:'var(--font-heading)',
+                      fontFamily:'Barlow Condensed', sans-serif,
                       fontSize:'0.78rem',
                       letterSpacing:'0.14em'
                     }}>

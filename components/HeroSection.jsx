@@ -116,8 +116,8 @@ const StarRating = ({ rating, reviews }) => (
         </svg>
       ))}
     </div>
-    <span style={{fontFamily:'var(--font-mono)', fontSize:'0.78rem', color:'var(--accent-gold)', fontWeight:600}}>{rating}</span>
-    <span style={{fontFamily:'var(--font-mono)', fontSize:'0.7rem', color:'var(--text-muted)'}}>({reviews})</span>
+    <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.78rem', color:'var(--accent-gold)', fontWeight:600}}>{rating}</span>
+    <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.7rem', color:'var(--text-muted)'}}>({reviews})</span>
   </div>
 );
 
@@ -214,7 +214,7 @@ const HeroSection = () => {
                 className="flex items-center gap-3">
                 <div className="h-px w-8" style={{background:`rgba(${game.accentRgb},0.7)`}} />
                 <span style={{
-                  fontFamily:'var(--font-mono)',
+                  fontFamily:'JetBrains Mono', monospace,
                   fontSize:'0.6rem',
                   letterSpacing:'0.32em',
                   color:`rgba(${game.accentRgb},0.85)`,
@@ -232,7 +232,7 @@ const HeroSection = () => {
                   style={{
                     background: badgeStyle.bg,
                     color: badgeStyle.color,
-                    fontFamily:'var(--font-mono)',
+                    fontFamily:'JetBrains Mono', monospace,
                     letterSpacing:'0.15em',
                     fontSize:'0.6rem',
                     border: badgeStyle.border || 'none',
@@ -241,7 +241,7 @@ const HeroSection = () => {
                   {game.badge}
                 </span>
                 <span style={{
-                  fontFamily:'var(--font-display)',
+                  fontFamily:'Barlow Condensed', sans-serif,
                   fontWeight:700,
                   fontSize:'0.75rem',
                   letterSpacing:'0.22em',
@@ -256,7 +256,7 @@ const HeroSection = () => {
               <motion.h1
                 initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:0.2}}
                 style={{
-                  fontFamily:'var(--font-display)',
+                  fontFamily:'Barlow Condensed', sans-serif,
                   fontSize:'clamp(3.2rem,8.5vw,6rem)',
                   lineHeight:0.88,
                   color:'#fff',
@@ -276,7 +276,7 @@ const HeroSection = () => {
               <motion.p
                 initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:0.33}}
                 style={{
-                  fontFamily:'var(--font-body)',
+                  fontFamily:'DM Sans', sans-serif,
                   fontSize:'1rem',
                   fontWeight:400,
                   lineHeight:1.72,
@@ -300,15 +300,15 @@ const HeroSection = () => {
                 className="flex flex-wrap items-center gap-5 pt-2">
                 <div className="flex flex-col gap-1">
                   {hasSale && (
-                    <span style={{fontFamily:'var(--font-mono)', fontSize:'0.75rem', color:'var(--text-muted)', textDecoration:'line-through', letterSpacing:'0.04em'}}>
+                    <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.75rem', color:'var(--text-muted)', textDecoration:'line-through', letterSpacing:'0.04em'}}>
                       PKR {game.originalPrice}
                     </span>
                   )}
-                  <span style={{fontFamily:'var(--font-mono)', fontSize:'1.7rem', fontWeight:700, color:'var(--accent-gold)', letterSpacing:'0.03em', lineHeight:1}}>
+                  <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'1.7rem', fontWeight:700, color:'var(--accent-gold)', letterSpacing:'0.03em', lineHeight:1}}>
                     PKR {game.price}
                   </span>
                   {hasSale && (
-                    <span style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem', color:'#10b981', letterSpacing:'0.15em', textTransform:'uppercase'}}>
+                    <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.6rem', color:'#10b981', letterSpacing:'0.15em', textTransform:'uppercase'}}>
                       ◆ Limited time deal
                     </span>
                   )}
@@ -355,7 +355,7 @@ const HeroSection = () => {
             )}
           </button>
         ))}
-        <span style={{fontFamily:'var(--font-mono)', fontSize:'0.58rem', letterSpacing:'0.22em', color:'var(--text-muted)', marginLeft:'8px'}}>
+        <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.58rem', letterSpacing:'0.22em', color:'var(--text-muted)', marginLeft:'8px'}}>
           {String(current+1).padStart(2,'0')} / {String(HERO_GAMES.length).padStart(2,'0')}
         </span>
       </div>
@@ -390,7 +390,7 @@ const HeroSection = () => {
               setAutoPlay(false);
             }}
             className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-white/50 hover:border-white/30 hover:text-white/80 transition-all"
-            style={{fontFamily:'var(--font-mono)', fontSize:'0.6rem'}}>
+            style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.6rem'}}>
             {a}
           </button>
         ))}
