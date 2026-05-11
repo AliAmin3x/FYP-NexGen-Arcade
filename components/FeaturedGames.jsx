@@ -112,4 +112,3 @@ const FeaturedGames = () => {
 };
 
 export default FeaturedGames;
-export { SectionHeader };
