@@ -8,9 +8,11 @@ export async function POST(request) {
     await connectDB();
     const { email, password } = await request.json();
 
-    // Hardcoded admin shortcut (matching original logic)
-    if (email === 'admin@gmail.com' && password === 'admin') {
-      const session = { uid: 'admin', email: 'admin@gmail.com', username: 'Admin', role: 'admin' };
+    // Admin shortcut — credentials loaded from environment variables
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (adminEmail && adminPassword && email === adminEmail && password === adminPassword) {
+      const session = { uid: 'admin', email: adminEmail, username: 'Admin', role: 'admin' };
       const res = NextResponse.json({ success: true, user: session });
       setSessionCookie(res, session);
       return res;
