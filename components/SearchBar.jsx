@@ -40,7 +40,7 @@ const SearchBar = () => {
   }, []);
 
   return (
-    <div className="relative w-full max-w-xl mx-auto" style={{fontFamily:'DM Sans', sans-serif}}>
+    <div className="relative w-full max-w-xl mx-auto" style={{fontFamily:"'DM Sans', sans-serif"}}>
       <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all duration-300 ${
         focused ? 'border-cyan-400/60 bg-white/[0.04]' : 'border-white/8 bg-white/[0.03]'
       }`} style={{backdropFilter:'blur(12px)'}}>
@@ -76,7 +76,7 @@ const SearchBar = () => {
                   {game.imageUrl && <Image src={game.imageUrl} alt={game.title} fill style={{objectFit:'cover'}} />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white truncate" style={{fontFamily:'DM Sans', sans-serif}}>{game.title}</p>
+                  <p className="text-sm font-semibold text-white truncate" style={{fontFamily:"'DM Sans', sans-serif"}}>{game.title}</p>
                   <p className="text-xs text-slate-400">{game.category} • {game.price === '0' || !game.price ? 'Free' : `PKR ${game.price}`}</p>
                 </div>
                 <svg className="w-4 h-4 text-slate-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

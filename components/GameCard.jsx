@@ -56,7 +56,7 @@ const GameCard = ({ game, isFav, onFav, onCart, onClick }) => {
               style={{
                 background:`${accent}22`,
                 border:`1px solid ${accent}40`,
-                fontFamily:'JetBrains Mono', monospace,
+                fontFamily:"'JetBrains Mono', monospace",
                 fontSize:'0.52rem',
                 letterSpacing:'0.14em',
                 textTransform:'uppercase',
@@ -92,7 +92,7 @@ const GameCard = ({ game, isFav, onFav, onCart, onClick }) => {
       <div className="p-3.5 flex flex-col gap-2.5">
         <h3 className="text-sm font-bold truncate leading-tight transition-colors duration-200 group-hover:text-amber-300"
           style={{
-            fontFamily:'Barlow Condensed', sans-serif,
+            fontFamily:"'Barlow Condensed', sans-serif",
             fontWeight:700,
             letterSpacing:'0.02em',
             fontSize:'0.88rem',
@@ -103,7 +103,7 @@ const GameCard = ({ game, isFav, onFav, onCart, onClick }) => {
 
         <div className="flex items-center justify-between gap-2">
           <span style={{
-            fontFamily:'JetBrains Mono', monospace,
+            fontFamily:"'JetBrains Mono', monospace",
             fontSize:'0.85rem',
             fontWeight:700,
             color: isFree ? 'var(--accent-emerald)' : 'var(--accent-gold)',
@@ -120,7 +120,7 @@ const GameCard = ({ game, isFav, onFav, onCart, onClick }) => {
               background: isFree ? 'rgba(16,185,129,0.12)' : 'rgba(240,192,64,0.1)',
               border:`1px solid ${isFree ? 'rgba(16,185,129,0.28)' : 'rgba(240,192,64,0.26)'}`,
               color: isFree ? 'var(--accent-emerald)' : 'var(--accent-gold)',
-              fontFamily:'Barlow Condensed', sans-serif,
+              fontFamily:"'Barlow Condensed', sans-serif",
               letterSpacing:'0.08em',
               fontSize:'0.7rem',
             }}>

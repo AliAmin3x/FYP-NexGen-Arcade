@@ -21,12 +21,12 @@ export const SectionHeader = ({ title, subtitle, link, linkLabel }) => {
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center gap-3">
           <div className="w-1 h-4 rounded-full" style={{background:'var(--accent-blue)'}} />
-          <span style={{fontFamily:'JetBrains Mono', monospace, fontSize:'0.6rem', letterSpacing:'0.3em', color:'var(--text-secondary)', textTransform:'uppercase', fontWeight:600}}>
+          <span style={{fontFamily:"'JetBrains Mono', monospace", fontSize:'0.6rem', letterSpacing:'0.3em', color:'var(--text-secondary)', textTransform:'uppercase', fontWeight:600}}>
             {subtitle}
           </span>
         </div>
         <h2 style={{
-          fontFamily:'Barlow Condensed', sans-serif,
+          fontFamily:"'Barlow Condensed', sans-serif",
           fontSize:'clamp(1.9rem,4.5vw,2.8rem)',
           lineHeight:0.92,
           color:'var(--text-primary)',
@@ -39,7 +39,7 @@ export const SectionHeader = ({ title, subtitle, link, linkLabel }) => {
       {link && (
         <button onClick={() => router.push(link)}
           className="flex items-center gap-2 transition-all duration-200 group"
-          style={{fontFamily:'Barlow Condensed', sans-serif, fontWeight:700, fontSize:'0.8rem', letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--text-muted)'}}>
+          style={{fontFamily:"'Barlow Condensed', sans-serif", fontWeight:700, fontSize:'0.8rem', letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--text-muted)'}}>
           <span className="group-hover:text-amber-400 transition-colors">{linkLabel}</span>
           <svg className="w-3.5 h-3.5 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
